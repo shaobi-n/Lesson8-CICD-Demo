@@ -29,10 +29,9 @@ jobs:
           docker push $IMAGE_NAME:$IMAGE_TAG
           docker push $IMAGE_NAME:latest
 
-
- deploy-docker-image:
+  deploy-docker-image:
     runs-on: ubuntu-latest
-    needs: [build-and-publish-docker-image]  # requires successful completion
+    needs: [build-and-publish-docker-image] # requires successful completion
     steps:
       - name: Set up SSH connection to AWS remote server
         env:
@@ -50,9 +49,9 @@ jobs:
             IdentityFile ~/.ssh/key.pem
             StrictHostKeyChecking no
           END
-      
+
       - name: Deploy Docker container on AWS via SSH
-        run: |  # Pre-requisite: docker has been installed on remote machine
+        run: | # Pre-requisite: docker has been installed on remote machine
           ssh remote_host "docker ps -a"                         # remote_host as defined in ~/.ssh/config
           ssh remote_host "docker ps -q | xargs -r docker stop"  # stops any running container
           ssh remote_host "docker pull ${IMAGE_NAME}"
